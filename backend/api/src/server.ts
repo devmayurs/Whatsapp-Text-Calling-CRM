@@ -8,8 +8,11 @@ const app = express();
 const PORT = process.env.PORT || 3001;
 
 // ── Middleware ───────────────────────────────────────────────────
-app.use(cors());
+app.use(cors({
+  origin: process.env.CORS_ORIGIN || '*',
+}));
 app.use(express.json());
+
 
 // ── Routes ──────────────────────────────────────────────────────
 app.use('/api/clients', clientsRouter);
@@ -64,5 +67,5 @@ app.post('/api/init-db', async (_req, res) => {
 
 // ── Start Server ─────────────────────────────────────────────────
 app.listen(PORT, () => {
-  console.log(`✅ API server running at http://localhost:${PORT}`);
+  console.log(`✅ API server running at http://localhost:${PORT} [${process.env.NODE_ENV || 'development'}]`);
 });
