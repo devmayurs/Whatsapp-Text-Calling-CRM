@@ -1,0 +1,838 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Simple Med Spa CRM — WhatsApp & Gemini AI</title>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root {
+  --primary: #6B5B95;
+  --secondary: #C44569;
+  --accent: #88C4E8;
+  --light: #F7F3F0;
+  --dark: #2D2D44;
+  --border: #E0D5CE;
+  --success: #4CAF50;
+  --warning: #FF9800;
+}
+
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body {
+  font-family: 'Poppins', sans-serif;
+  background: var(--light);
+  color: var(--dark);
+  line-height: 1.6;
+}
+
+.container { max-width: 1200px; margin: 0 auto; padding: 20px; }
+
+/* HEADER */
+.header {
+  background: linear-gradient(135deg, var(--primary), var(--secondary));
+  color: white;
+  padding: 2rem;
+  border-radius: 10px;
+  margin-bottom: 2rem;
+  box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+}
+.header h1 { font-size: 2rem; margin-bottom: 0.5rem; }
+.header p { font-size: 0.95rem; opacity: 0.95; }
+
+/* TABS */
+.tabs {
+  display: flex;
+  gap: 1rem;
+  margin-bottom: 2rem;
+  border-bottom: 2px solid var(--border);
+}
+.tab {
+  padding: 0.75rem 1.5rem;
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-size: 0.95rem;
+  font-weight: 500;
+  color: var(--dark);
+  border-bottom: 3px solid transparent;
+  transition: all 0.3s;
+}
+.tab:hover { color: var(--primary); }
+.tab.active {
+  color: var(--primary);
+  border-bottom-color: var(--primary);
+}
+
+/* CONTENT SECTIONS */
+.content { display: none; }
+.content.active { display: block; }
+
+/* CARDS */
+.card {
+  background: white;
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 1.5rem;
+  margin-bottom: 1.5rem;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+}
+.card h2 { color: var(--primary); margin-bottom: 1rem; font-size: 1.3rem; }
+.card h3 { color: var(--secondary); margin: 1rem 0 0.5rem; font-size: 1.05rem; }
+
+/* FORM ELEMENTS */
+.form-group {
+  margin-bottom: 1rem;
+}
+.label {
+  display: block;
+  margin-bottom: 0.5rem;
+  font-weight: 500;
+  color: var(--dark);
+}
+.input, .select, textarea {
+  width: 100%;
+  padding: 0.75rem;
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  font-family: 'Poppins', sans-serif;
+  font-size: 0.95rem;
+}
+.input:focus, .select:focus, textarea:focus {
+  outline: none;
+  border-color: var(--primary);
+  box-shadow: 0 0 0 3px rgba(107, 91, 149, 0.1);
+}
+textarea { resize: vertical; min-height: 100px; }
+
+/* BUTTONS */
+.btn {
+  padding: 0.75rem 1.5rem;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  font-weight: 600;
+  transition: all 0.3s;
+  font-size: 0.95rem;
+}
+.btn-primary {
+  background: var(--primary);
+  color: white;
+}
+.btn-primary:hover { background: #5a4a7f; transform: translateY(-2px); box-shadow: 0 4px 12px rgba(107, 91, 149, 0.3); }
+.btn-secondary {
+  background: var(--secondary);
+  color: white;
+}
+.btn-secondary:hover { background: #a03654; }
+.btn-success {
+  background: var(--success);
+  color: white;
+}
+.btn-success:hover { background: #45a049; }
+.btn-outline {
+  background: transparent;
+  border: 2px solid var(--primary);
+  color: var(--primary);
+}
+.btn-outline:hover { background: var(--primary); color: white; }
+
+/* TABLE */
+.table-container {
+  overflow-x: auto;
+  margin-top: 1rem;
+}
+table {
+  width: 100%;
+  border-collapse: collapse;
+  background: white;
+}
+th {
+  background: var(--primary);
+  color: white;
+  padding: 1rem;
+  text-align: left;
+  font-weight: 600;
+}
+td {
+  padding: 0.85rem 1rem;
+  border-bottom: 1px solid var(--border);
+}
+tr:hover { background: var(--light); }
+
+/* STATUS BADGE */
+.badge {
+  display: inline-block;
+  padding: 0.3rem 0.8rem;
+  border-radius: 20px;
+  font-size: 0.8rem;
+  font-weight: 600;
+}
+.badge-new { background: #E3F2FD; color: #1976D2; }
+.badge-confirmed { background: #E8F5E9; color: #388E3C; }
+.badge-completed { background: #F3E5F5; color: #7B1FA2; }
+.badge-pending { background: #FFF3E0; color: #F57C00; }
+
+/* CODE BLOCK */
+.code-block {
+  background: #f5f5f5;
+  border-left: 4px solid var(--primary);
+  padding: 1rem;
+  overflow-x: auto;
+  font-family: 'Courier New', monospace;
+  font-size: 0.85rem;
+  margin: 1rem 0;
+  border-radius: 6px;
+}
+
+/* STEPS */
+.steps {
+  counter-reset: step-counter;
+  list-style: none;
+}
+.steps li {
+  counter-increment: step-counter;
+  margin-bottom: 1.5rem;
+  padding-left: 2.5rem;
+  position: relative;
+}
+.steps li::before {
+  content: counter(step-counter);
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 2rem;
+  height: 2rem;
+  background: var(--primary);
+  color: white;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 700;
+}
+
+/* MESSAGE */
+.message {
+  padding: 1rem;
+  border-radius: 6px;
+  margin-bottom: 1rem;
+  display: flex;
+  gap: 1rem;
+}
+.message-info { background: #E3F2FD; color: #1565C0; border-left: 4px solid #1976D2; }
+.message-success { background: #E8F5E9; color: #2E7D32; border-left: 4px solid #4CAF50; }
+.message-warning { background: #FFF3E0; color: #E65100; border-left: 4px solid #FF9800; }
+
+.icon { font-size: 1.2rem; flex-shrink: 0; }
+
+/* GRID */
+.grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 1.5rem;
+}
+
+/* MODAL */
+.modal {
+  display: none;
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0,0,0,0.5);
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+}
+.modal.active { display: flex; }
+.modal-content {
+  background: white;
+  padding: 2rem;
+  border-radius: 10px;
+  max-width: 500px;
+  width: 90%;
+  max-height: 90vh;
+  overflow-y: auto;
+}
+.modal-close {
+  float: right;
+  font-size: 1.5rem;
+  cursor: pointer;
+  background: none;
+  border: none;
+  color: var(--dark);
+}
+
+@media (max-width: 768px) {
+  .header h1 { font-size: 1.5rem; }
+  .tabs { flex-wrap: wrap; }
+  .grid { grid-template-columns: 1fr; }
+}
+</style>
+</head>
+<body>
+
+<div class="container">
+
+<!-- HEADER -->
+<div class="header">
+  <h1>💆 Simple Med Spa CRM</h1>
+  <p>WhatsApp + Google Gemini AI + n8n (Self-Hosted) • Zero Third-Party Costs</p>
+</div>
+
+<!-- TABS -->
+<div class="tabs">
+  <button class="tab active" onclick="showTab('overview')">📋 Overview</button>
+  <button class="tab" onclick="showTab('n8n-setup')">⚙️ n8n Setup</button>
+  <button class="tab" onclick="showTab('clients')">👥 Clients CRM</button>
+  <button class="tab" onclick="showTab('appointments')">📅 Appointments</button>
+</div>
+
+<!-- ============ TAB: OVERVIEW ============ -->
+<div id="overview" class="content active">
+
+<div class="card">
+  <h2>How This Simple CRM Works</h2>
+  <p>Patient sends a WhatsApp message or calls → n8n (running on your PC) receives it → Google Gemini AI responds with med spa context → Customer confirms booking → Data saved to local SQLite database → You see it in the CRM table.</p>
+</div>
+
+<div class="message message-info">
+  <span class="icon">ℹ️</span>
+  <div><strong>Zero Cost Setup:</strong> n8n self-hosted (free), Google Gemini API (free tier: 60 requests/min), WhatsApp Business API (you set up once), SQLite local DB (free).</div>
+</div>
+
+<div class="grid">
+  <div class="card">
+    <h3>✓ What's Included</h3>
+    <ul style="margin-left: 1.5rem;">
+      <li>WhatsApp inbound messages & calls</li>
+      <li>Gemini AI responses (med spa context only)</li>
+      <li>Simple appointment booking flow</li>
+      <li>Client database (local SQLite)</li>
+      <li>Appointment history table</li>
+    </ul>
+  </div>
+
+  <div class="card">
+    <h3>✗ What's NOT Included</h3>
+    <ul style="margin-left: 1.5rem;">
+      <li>Automated reminders (manual for now)</li>
+      <li>Payment processing</li>
+      <li>Complex analytics</li>
+      <li>Vapi voice calls (WhatsApp calls only)</li>
+      <li>Multi-language support</li>
+    </ul>
+  </div>
+</div>
+
+<div class="card">
+  <h2>Architecture Diagram</h2>
+  <div class="code-block" style="font-family: monospace; color: var(--primary); background: #f0f0f0;">
+Patient WhatsApp Message
+        ↓
+  [WhatsApp API]
+        ↓
+ [n8n Self-Hosted] ← Runs on your PC
+        ↓
+[Google Gemini API] ← Free tier
+        ↓
+[Generate med spa response]
+        ↓
+[Send back to WhatsApp]
+        ↓
+[If booking confirmed → Save to SQLite DB]
+        ↓
+[Display in CRM table]
+  </div>
+</div>
+
+</div>
+
+<!-- ============ TAB: n8n SETUP ============ -->
+<div id="n8n-setup" class="content">
+
+<div class="card">
+  <h2>Installation & Setup (30 minutes)</h2>
+  <ol class="steps">
+    <li>
+      <strong>Install n8n on your PC</strong>
+      <p>Download from n8n.io or use Docker (recommended):</p>
+      <div class="code-block">
+docker run -it --rm --name n8n -p 5678:5678 -v ~/.n8n:/home/node/.n8n n8nio/n8n</div>
+      <p>Then go to: <strong>http://localhost:5678</strong></p>
+    </li>
+
+    <li>
+      <strong>Get WhatsApp Business API Setup</strong>
+      <p>Option A: Use WhatsApp Cloud API (free for testing, $0.005/msg after)</p>
+      <p>Option B: Use WhatsApp Business App on your phone (simple, free, local)</p>
+      <p>For this guide, we'll use WhatsApp Business API via n8n.</p>
+    </li>
+
+    <li>
+      <strong>Get Google Gemini API Key (FREE)</strong>
+      <ul style="margin-left: 1.5rem; margin-top: 0.5rem;">
+        <li>Go to: <strong>ai.google.dev</strong></li>
+        <li>Click "Get API Key" → Create new API key (free tier = 60 req/min)</li>
+        <li>Copy the key and save it</li>
+      </ul>
+    </li>
+
+    <li>
+      <strong>Create n8n Workflow (Simple Flow)</strong>
+      <p>New workflow with these nodes:</p>
+      <div class="code-block">
+1. WhatsApp Trigger (Listen for incoming messages)
+2. Gemini Code Node (Send to Gemini API with prompt)
+3. Parse Response
+4. If "confirm booking" → Save to SQLite
+5. Send response back to WhatsApp
+      </div>
+    </li>
+
+    <li>
+      <strong>Set Up SQLite Database (Local)</strong>
+      <p>Install SQLite3 on your PC or use n8n's SQLite node.</p>
+      <p>Create two simple tables:</p>
+      <div class="code-block">
+CREATE TABLE clients (
+  id INTEGER PRIMARY KEY,
+  phone_number TEXT UNIQUE,
+  client_name TEXT,
+  email TEXT,
+  created_at DATETIME
+);
+
+CREATE TABLE appointments (
+  id INTEGER PRIMARY KEY,
+  phone_number TEXT,
+  treatment TEXT,
+  appointment_date TEXT,
+  status TEXT,
+  created_at DATETIME
+);
+      </div>
+    </li>
+
+    <li>
+      <strong>Add Gemini System Prompt to n8n</strong>
+      <p>This keeps AI focused on med spa only:</p>
+      <div class="code-block" style="font-size: 0.8rem;">
+You are a med spa receptionist AI assistant for Lumière Med Spa.
+
+TREATMENTS OFFERED:
+- Botox ($14/unit, 20–40 units typical)
+- Dermal Fillers ($650–950)
+- HydraFacial ($280)
+- Chemical Peel ($350)
+- Laser Resurfacing ($650)
+- Microneedling ($380)
+- Microneedling + PRP ($580)
+
+HOURS: Mon–Sat 9AM–7PM, Sun 10AM–5PM
+LOCATION: 45 Blossom Avenue, Suite 200
+
+RULES:
+1. Only discuss med spa services
+2. If user asks non-med-spa questions, politely redirect
+3. For bookings: ask name, phone, preferred treatment, preferred date/time
+4. After confirming: ask "Are you sure you want to book this appointment?"
+5. When user says YES → respond with "Booking confirmed! See you soon."
+6. When user says NO → ask what else you can help with
+
+ALWAYS be professional, warm, and luxury-focused.
+      </div>
+    </li>
+
+    <li>
+      <strong>Test the workflow</strong>
+      <p>Send a WhatsApp message to your business number. You should get an AI response from Gemini.</p>
+    </li>
+
+    <li>
+      <strong>Enable local n8n to run automatically on PC startup</strong>
+      <p>Use Windows Task Scheduler (Windows) or systemd (Linux) to start n8n when you turn on your PC.</p>
+    </li>
+  </ol>
+</div>
+
+<div class="card">
+  <h2>n8n Workflow Code (Copy into n8n Editor)</h2>
+  <div class="code-block" style="font-size: 0.8rem;">
+{
+  "nodes": [
+    {
+      "name": "WhatsApp Trigger",
+      "type": "webhook",
+      "parameters": {
+        "path": "whatsapp-webhook",
+        "method": "POST"
+      }
+    },
+    {
+      "name": "Extract Message",
+      "type": "set",
+      "parameters": {
+        "assignments": {
+          "phone": "={{$json.body.From}}",
+          "message": "={{$json.body.Body}}",
+          "timestamp": "={{new Date().toISOString()}}"
+        }
+      }
+    },
+    {
+      "name": "Call Gemini API",
+      "type": "httpRequest",
+      "parameters": {
+        "url": "https://generativelanguage.googleapis.com/v1beta/models/gemini-pro:generateContent?key={{YOUR_GEMINI_API_KEY}}",
+        "method": "POST",
+        "body": {
+          "contents": [
+            {
+              "parts": [
+                {
+                  "text": "{{$json.message}}"
+                }
+              ]
+            }
+          ],
+          "systemInstruction": "You are a med spa receptionist... [USE THE PROMPT ABOVE]"
+        }
+      }
+    },
+    {
+      "name": "Parse Gemini Response",
+      "type": "set",
+      "parameters": {
+        "assignments": {
+          "aiResponse": "={{$json.candidates[0].content.parts[0].text}}"
+        }
+      }
+    },
+    {
+      "name": "Check if Booking Confirmed",
+      "type": "if",
+      "parameters": {
+        "conditions": {
+          "string": [
+            {
+              "value1": "={{$json.message.toLowerCase()}}",
+              "operation": "contains",
+              "value2": "confirm"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "Save to SQLite (if confirmed)",
+      "type": "sqlite",
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "INSERT INTO appointments (phone_number, treatment, appointment_date, status) VALUES ('{{$json.phone}}', 'User Treatment', '{{$json.timestamp}}', 'Booked')"
+      }
+    },
+    {
+      "name": "Send Response Back to WhatsApp",
+      "type": "httpRequest",
+      "parameters": {
+        "url": "https://api.twilio.com/2010-04-01/Accounts/{{TWILIO_SID}}/Messages.json",
+        "method": "POST",
+        "body": {
+          "From": "whatsapp:+1234567890",
+          "To": "whatsapp:{{$json.phone}}",
+          "Body": "{{$json.aiResponse}}"
+        }
+      }
+    }
+  ]
+}
+  </div>
+</div>
+
+<div class="message message-warning">
+  <span class="icon">⚠️</span>
+  <div><strong>Important:</strong> Replace {{YOUR_GEMINI_API_KEY}} with your actual API key. Never commit this to GitHub.</div>
+</div>
+
+</div>
+
+<!-- ============ TAB: CLIENTS ============ -->
+<div id="clients" class="content">
+
+<div class="card">
+  <h2>Add New Client</h2>
+  <form style="display: grid; gap: 1rem;">
+    <div class="form-group">
+      <label class="label">Phone Number (WhatsApp)</label>
+      <input type="tel" class="input" placeholder="+1 (555) 234-7890" id="phone">
+    </div>
+    <div class="form-group">
+      <label class="label">Client Name</label>
+      <input type="text" class="input" placeholder="e.g., Sarah Johnson" id="name">
+    </div>
+    <div class="form-group">
+      <label class="label">Email (Optional)</label>
+      <input type="email" class="input" placeholder="sarah@email.com" id="email">
+    </div>
+    <div class="form-group">
+      <label class="label">Preferred Treatment</label>
+      <select class="select" id="treatment">
+        <option value="">Select a treatment</option>
+        <option value="Botox">Botox</option>
+        <option value="Dermal Filler">Dermal Filler</option>
+        <option value="HydraFacial">HydraFacial</option>
+        <option value="Chemical Peel">Chemical Peel</option>
+        <option value="Laser Resurfacing">Laser Resurfacing</option>
+        <option value="Microneedling">Microneedling</option>
+        <option value="Microneedling + PRP">Microneedling + PRP</option>
+      </select>
+    </div>
+    <button type="button" class="btn btn-primary" onclick="addClient()">Add Client</button>
+  </form>
+</div>
+
+<div class="card">
+  <h2>Clients Database</h2>
+  <div class="table-container">
+    <table>
+      <thead>
+        <tr>
+          <th>Phone Number</th>
+          <th>Client Name</th>
+          <th>Email</th>
+          <th>Preferred Treatment</th>
+          <th>Status</th>
+          <th>Last Updated</th>
+          <th>Action</th>
+        </tr>
+      </thead>
+      <tbody id="clientsTable">
+        <tr>
+          <td colspan="7" style="text-align: center; padding: 2rem; color: #999;">
+            No clients yet. Add one using the form above.
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+</div>
+
+<!-- ============ TAB: APPOINTMENTS ============ -->
+<div id="appointments" class="content">
+
+<div class="card">
+  <h2>Appointment Booking Flow (Automated via WhatsApp)</h2>
+  <p><strong>This happens automatically when patient texts WhatsApp:</strong></p>
+  <ol class="steps" style="margin-top: 1rem;">
+    <li>Patient: "Hi, I want to book Botox"</li>
+    <li>AI: "Great! I'd love to help. Which date works for you? We're open Mon–Sat, 9AM–7PM."</li>
+    <li>Patient: "Next Tuesday at 10 AM"</li>
+    <li>AI: "Perfect! That's Tuesday at 10 AM for Botox. Are you sure you want to book this appointment?"</li>
+    <li>Patient: "Yes, confirm"</li>
+    <li>AI: "Booking confirmed! See you Tuesday at 10 AM. We're located at 45 Blossom Avenue."</li>
+    <li>n8n automatically saves: Phone, Treatment, Date, Status = "Booked"</li>
+  </ol>
+</div>
+
+<div class="card">
+  <h2>Appointments Table</h2>
+  <div class="table-container">
+    <table>
+      <thead>
+        <tr>
+          <th>Appointment ID</th>
+          <th>Client Phone</th>
+          <th>Treatment</th>
+          <th>Date & Time</th>
+          <th>Status</th>
+          <th>Created</th>
+          <th>Action</th>
+        </tr>
+      </thead>
+      <tbody id="appointmentsTable">
+        <tr>
+          <td colspan="7" style="text-align: center; padding: 2rem; color: #999;">
+            No appointments yet. Bookings will appear here automatically.
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<div class="card">
+  <h2>Sample Appointments (For Testing)</h2>
+  <button class="btn btn-outline" onclick="addSampleAppointment()">Add Sample Appointment</button>
+  <p style="margin-top: 1rem; font-size: 0.9rem; color: #666;">This helps you test the CRM before connecting real WhatsApp data.</p>
+</div>
+
+</div>
+
+</div>
+
+<!-- FOOTER -->
+<div style="text-align: center; padding: 2rem; color: #999; border-top: 1px solid var(--border); margin-top: 2rem;">
+  <p><strong>Simple Med Spa CRM</strong> • WhatsApp + Google Gemini + n8n Self-Hosted</p>
+  <p style="font-size: 0.9rem;">Total Cost: $0 (free tier) | Setup Time: ~30 minutes | Maintenance: Minimal</p>
+</div>
+
+<!-- MODALS -->
+<div id="appointmentModal" class="modal">
+  <div class="modal-content">
+    <button class="modal-close" onclick="closeModal('appointmentModal')">×</button>
+    <h2 style="color: var(--primary); margin-bottom: 1.5rem;">Edit Appointment</h2>
+    <form style="display: grid; gap: 1rem;">
+      <div class="form-group">
+        <label class="label">Treatment</label>
+        <select class="select" id="editTreatment">
+          <option>Botox</option>
+          <option>Dermal Filler</option>
+          <option>HydraFacial</option>
+          <option>Chemical Peel</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label class="label">Status</label>
+        <select class="select" id="editStatus">
+          <option>Booked</option>
+          <option>Completed</option>
+          <option>Cancelled</option>
+        </select>
+      </div>
+      <button type="button" class="btn btn-primary" onclick="updateAppointment()">Update</button>
+    </form>
+  </div>
+</div>
+
+<script>
+// Simple in-memory data (in real setup, this comes from SQLite via n8n)
+let clients = JSON.parse(localStorage.getItem('clients')) || [];
+let appointments = JSON.parse(localStorage.getItem('appointments')) || [];
+
+function showTab(tabName) {
+  document.querySelectorAll('.content').forEach(el => el.classList.remove('active'));
+  document.querySelectorAll('.tab').forEach(el => el.classList.remove('active'));
+  document.getElementById(tabName).classList.add('active');
+  event.target.classList.add('active');
+}
+
+function addClient() {
+  const phone = document.getElementById('phone').value;
+  const name = document.getElementById('name').value;
+  const email = document.getElementById('email').value;
+  const treatment = document.getElementById('treatment').value;
+
+  if (!phone || !name) {
+    alert('Please fill in phone and name');
+    return;
+  }
+
+  const newClient = {
+    id: Date.now(),
+    phone,
+    name,
+    email,
+    treatment,
+    status: 'Active',
+    createdAt: new Date().toLocaleString()
+  };
+
+  clients.push(newClient);
+  localStorage.setItem('clients', JSON.stringify(clients));
+  renderClients();
+
+  document.getElementById('phone').value = '';
+  document.getElementById('name').value = '';
+  document.getElementById('email').value = '';
+  document.getElementById('treatment').value = '';
+
+  alert('✓ Client added successfully!');
+}
+
+function renderClients() {
+  const table = document.getElementById('clientsTable');
+  if (clients.length === 0) {
+    table.innerHTML = '<tr><td colspan="7" style="text-align: center; padding: 2rem; color: #999;">No clients yet.</td></tr>';
+    return;
+  }
+
+  table.innerHTML = clients.map(c => `
+    <tr>
+      <td><strong>${c.phone}</strong></td>
+      <td>${c.name}</td>
+      <td>${c.email || '—'}</td>
+      <td>${c.treatment || '—'}</td>
+      <td><span class="badge badge-new">${c.status}</span></td>
+      <td style="font-size: 0.85rem;">${c.createdAt}</td>
+      <td><button class="btn btn-outline" onclick="deleteClient(${c.id})" style="padding: 0.4rem 0.8rem; font-size: 0.8rem;">Delete</button></td>
+    </tr>
+  `).join('');
+}
+
+function deleteClient(id) {
+  if (confirm('Delete this client?')) {
+    clients = clients.filter(c => c.id !== id);
+    localStorage.setItem('clients', JSON.stringify(clients));
+    renderClients();
+  }
+}
+
+function addSampleAppointment() {
+  const sampleAppt = {
+    id: 'APT-' + Math.random().toString(36).substr(2, 9).toUpperCase(),
+    phone: '+1 (555) 234-7890',
+    treatment: 'Botox',
+    dateTime: new Date().toLocaleString(),
+    status: 'Booked',
+    createdAt: new Date().toLocaleString()
+  };
+
+  appointments.push(sampleAppt);
+  localStorage.setItem('appointments', JSON.stringify(appointments));
+  renderAppointments();
+  alert('✓ Sample appointment added!');
+}
+
+function renderAppointments() {
+  const table = document.getElementById('appointmentsTable');
+  if (appointments.length === 0) {
+    table.innerHTML = '<tr><td colspan="7" style="text-align: center; padding: 2rem; color: #999;">No appointments yet.</td></tr>';
+    return;
+  }
+
+  table.innerHTML = appointments.map(a => `
+    <tr>
+      <td><strong>${a.id}</strong></td>
+      <td>${a.phone}</td>
+      <td>${a.treatment}</td>
+      <td>${a.dateTime}</td>
+      <td><span class="badge ${a.status === 'Booked' ? 'badge-confirmed' : a.status === 'Completed' ? 'badge-completed' : 'badge-pending'}">${a.status}</span></td>
+      <td style="font-size: 0.85rem;">${a.createdAt}</td>
+      <td><button class="btn btn-outline" onclick="deleteAppt('${a.id}')" style="padding: 0.4rem 0.8rem; font-size: 0.8rem;">Delete</button></td>
+    </tr>
+  `).join('');
+}
+
+function deleteAppt(id) {
+  if (confirm('Delete this appointment?')) {
+    appointments = appointments.filter(a => a.id !== id);
+    localStorage.setItem('appointments', JSON.stringify(appointments));
+    renderAppointments();
+  }
+}
+
+function closeModal(modalId) {
+  document.getElementById(modalId).classList.remove('active');
+}
+
+// Load data on page load
+renderClients();
+renderAppointments();
+</script>
+
+</body>
+</html>
