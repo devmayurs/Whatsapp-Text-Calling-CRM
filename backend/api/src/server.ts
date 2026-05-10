@@ -1,4 +1,4 @@
-import express from 'express';
+import express, { Request, Response } from 'express';
 import cors from 'cors';
 import { pool } from './db/pool';
 import clientsRouter from './routes/clients';
@@ -19,7 +19,7 @@ app.use('/api/clients', clientsRouter);
 app.use('/api/appointments', appointmentsRouter);
 
 // ── Health Check ─────────────────────────────────────────────────
-app.get('/api/health', async (_req, res) => {
+app.get('/api/health', async (_req: Request, res: Response) => {
   try {
     const result = await pool.query('SELECT NOW() as time');
     res.json({
@@ -34,7 +34,7 @@ app.get('/api/health', async (_req, res) => {
 });
 
 // ── Init DB ───────────────────────────────────────────────────────
-app.post('/api/init-db', async (_req, res) => {
+app.post('/api/init-db', async (_req: Request, res: Response) => {
   try {
     await pool.query(`
       CREATE TABLE IF NOT EXISTS clients (
