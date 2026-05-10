@@ -1,0 +1,16 @@
+services:
+  - type: web
+    name: whatsapp-crm-api
+    runtime: node
+    rootDir: backend/api
+    buildCommand: npm install && npm run build
+    startCommand: npm run start
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: DATABASE_URL
+        sync: false        # Set this manually in Render dashboard (it's a secret)
+      - key: CORS_ORIGIN
+        sync: false        # Set to your frontend URL in Render dashboard
+      - key: PORT
+        value: 3001
