@@ -19,8 +19,8 @@ services:
   # ── n8n Workflow Automation ───────────────────────────────────────────────
   - type: web
     name: n8n-whatsapp-agent
-    runtime: docker
-    image:
+    env: docker
+    dockerImage:
       url: docker.n8n.io/n8nio/n8n
     region: singapore
     plan: free
