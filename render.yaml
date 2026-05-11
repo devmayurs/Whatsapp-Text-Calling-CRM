@@ -1,59 +1,51 @@
 services:
-  # ── Existing backend API ──────────────────────────────────────────────────
-  - type: web
-    name: whatsapp-crm-api
-    runtime: node
-    rootDir: backend/api
-    buildCommand: npm install && npm run build
-    startCommand: npm run start
-    envVars:
-      - key: NODE_ENV
-        value: production
-      - key: DATABASE_URL
-        sync: false        # Set manually in Render dashboard (secret)
-      - key: CORS_ORIGIN
-        sync: false        # Set to your frontend URL in Render dashboard
-      - key: PORT
-        value: 3001
-
-  # ── n8n Workflow Automation ───────────────────────────────────────────────
   - type: web
     name: n8n-whatsapp-agent
     env: docker
+
     dockerImage:
       url: docker.n8n.io/n8nio/n8n
-    region: singapore
+
     plan: free
+    region: singapore
+
     envVars:
-      # --- n8n core (values derived from project .env) ---
-      - key: N8N_HOST
-        value: n8n-whatsapp-agent.onrender.com   # update after first deploy if name differs
       - key: N8N_PORT
         value: 5678
+
       - key: N8N_PROTOCOL
         value: https
-      - key: WEBHOOK_URL
-        value: https://n8n-whatsapp-agent.onrender.com  # matches N8N_HOST above
-      - key: GENERIC_TIMEZONE
-        value: Asia/Kolkata                              # from project locale
-      - key: N8N_SECURE_COOKIE
-        value: "false"                                   # required on Render free (no sticky sessions)
-      - key: N8N_ENCRYPTION_KEY
-        sync: false   # Set manually in Render dashboard — keep secret, e.g. mayur-whatsapp-crm-secret-2026
 
-      # --- Database: reuse your existing Supabase PostgreSQL ---
+      - key: GENERIC_TIMEZONE
+        value: Asia/Kolkata
+
+      - key: N8N_SECURE_COOKIE
+        value: "false"
+
+      - key: N8N_RUNNERS_ENABLED
+        value: "true"
+
+      - key: N8N_ENCRYPTION_KEY
+        sync: false
+
+      # PostgreSQL
       - key: DB_TYPE
         value: postgresdb
+
       - key: DB_POSTGRESDB_HOST
         value: aws-1-ap-southeast-2.pooler.supabase.com
+
       - key: DB_POSTGRESDB_PORT
         value: 5432
+
       - key: DB_POSTGRESDB_DATABASE
         value: postgres
-      - key: DB_POSTGRESDB_USER
-        sync: false   # Set manually: postgres.lobldvmbhodcyydgylal
-      - key: DB_POSTGRESDB_PASSWORD
-        sync: false   # Set manually in Render dashboard (secret)
-      - key: DB_POSTGRESDB_SCHEMA
-        value: n8n    # keeps n8n tables separate from your CRM tables
 
+      - key: DB_POSTGRESDB_USER
+        value: postgres.lobldvmbhodcyydgylal
+
+      - key: DB_POSTGRESDB_PASSWORD
+        sync: false
+
+      - key: DB_POSTGRESDB_SCHEMA
+        value: n8n
