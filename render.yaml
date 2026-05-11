@@ -57,7 +57,3 @@ services:
       - key: DB_POSTGRESDB_SCHEMA
         value: n8n    # keeps n8n tables separate from your CRM tables
 
-    disk:
-      name: n8n-data
-      mountPath: /home/node/.n8n
-      sizeGB: 1
