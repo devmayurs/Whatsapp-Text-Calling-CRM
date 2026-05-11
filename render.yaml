@@ -1,9 +1,33 @@
 services:
+  # ── Backend API ─────────────────────────────
+  - type: web
+    name: whatsapp-crm-api
+    runtime: node
+    rootDir: backend/api
+
+    buildCommand: npm install && npm run build
+    startCommand: npm run start
+
+    envVars:
+      - key: NODE_ENV
+        value: production
+
+      - key: DATABASE_URL
+        sync: false
+
+      - key: CORS_ORIGIN
+        sync: false
+
+      - key: PORT
+        value: 3001
+
+
+  # ── n8n ─────────────────────────────────────
   - type: web
     name: n8n-whatsapp-agent
-    env: docker
+    runtime: image
 
-    dockerImage:
+    image:
       url: docker.n8n.io/n8nio/n8n
 
     plan: free
